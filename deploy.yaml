@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sleepergoose
+  name: sleepergoose
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: sleepergoose
+  template:
+    metadata:
+      labels:
+        app: sleepergoose
+    spec:
+      automountServiceAccountToken: true
+      serviceAccount: sleepergoose-sa
+      containers:
+      - image: docker.io/tesla369cybernetics/sleepergoose
+        name: sleepergoose
+        ports:
+          - containerPort: 3000
+        args:
+          - --lease-name=my-lease
+        env:
+          - name: POD_NAME
+            valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.name
